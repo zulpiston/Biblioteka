@@ -1,0 +1,208 @@
+﻿
+@page "/books"
+@using Biblioteka.Models
+@inject IHttpClientFactory HttpClientFactory
+
+
+
+<h3>Ksiazki</h3>
+
+<div>
+    <!-- Sortowanie -->
+    <button @onclick="() => SortBooksBy(nameof(Book.Title))">Sortuj po tytule</button>
+    <button @onclick="() => SortBooksBy(nameof(Book.Author))">Sortuj po autorze</button>
+    <button @onclick="() => SortBooksBy(nameof(Book.IsAvailable))">Sortuj po dostępności</button>
+</div>
+
+<div>
+    <!-- Wyszukiwanie -->
+    <input @bind="searchTerm" placeholder="Szukaj po tytule lub autorze" />
+    <button @onclick="SearchBooks">Szukaj</button>
+</div>
+
+
+<button @onclick="LoadBooks">Załaduj Książki</button>
+<button @onclick="ShowAddBookForm">Dodaj Książkę</button>
+
+@if (isAddBookFormVisible)
+{
+    <EditForm Model="@newBook" OnValidSubmit="AddBook">
+        <InputText @bind-Value="newBook.Title" placeholder="Tytuł" />
+        <InputText @bind-Value="newBook.Author" placeholder="Autor" />
+        <InputNumber @bind-Value="newBook.YearPublished" placeholder="Rok Wydania" />
+        <button type="submit">Dodaj</button>
+    </EditForm>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tytuł</th>
+            <th>Autor</th>
+            <th>Rok Wydania</th>
+            <th>Dostępność</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in displayedBooks)
+        {
+            <tr>
+                <td>@book.Id</td>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>@book.YearPublished</td>
+                <td>
+                    @(book.IsAvailable ? "Dostępna" : "Wypożyczona")
+                    <button @onclick="() => ToggleAvailability(book.Id, !book.IsAvailable)">status</button>
+                </td>
+                <td>
+                    <button @onclick="() => DeleteBook(book.Id)">Usuń</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Book> books = new(); // Pełna lista książek
+    private List<Book> displayedBooks = new(); // Lista filtrowana/sortowana
+    private Book newBook = new();
+    private bool isAddBookFormVisible = false;
+
+    private string? searchTerm; // Termin wyszukiwania
+    private bool isAscending = true; // Flaga sortowania (rosnąco/malejąco)
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBooks(); // Automatyczne ładowanie przy starcie
+    }
+
+    private async Task LoadBooks()
+    {
+        try
+        {
+            var httpClient = HttpClientFactory.CreateClient("BooksApi");
+            books = await httpClient.GetFromJsonAsync<List<Book>>("api/Books") ?? new List<Book>();
+            displayedBooks = books; // Wyświetl wszystkie książki domyślnie
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading books: {ex.Message}");
+        }
+    }
+
+    private void SortBooksBy(string propertyName)
+    {
+        Console.WriteLine($"Sorting by: {propertyName}"); // Sprawdź, czy ta linia jest wywoływana
+        
+        if (isAscending)
+        {
+            displayedBooks = displayedBooks.OrderBy(b => GetPropertyValue(b, propertyName)).ToList();
+        }
+        else
+        {
+            displayedBooks = displayedBooks.OrderByDescending(b => GetPropertyValue(b, propertyName)).ToList();
+        }
+        isAscending = !isAscending; // Zmień kierunek sortowania
+        StateHasChanged(); // Wymuś aktualizację interfejsu
+    }
+
+    private object? GetPropertyValue(Book book, string propertyName)
+    {
+        var property = book.GetType().GetProperty(propertyName);
+        if (property != null)
+        {
+            return property.GetValue(book, null);
+        }
+        Console.WriteLine($"Property {propertyName} not found on Book"); // Debugowanie
+        return null;
+    }
+
+    private void SearchBooks()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            displayedBooks = books; // Pokaż wszystkie książki, jeśli brak terminu wyszukiwania
+        }
+        else
+        {
+            // Filtruje książki na podstawie tytułu lub autora
+            displayedBooks = books
+                .Where(b => b.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                            b.Author.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+        StateHasChanged(); // Wymuś aktualizację interfejsu
+    }
+
+    private void ShowAddBookForm()
+    {
+        isAddBookFormVisible = true;
+    }
+
+    private async Task AddBook()
+    {
+        try
+        {
+            if (newBook != null)
+            {
+                var httpClient = HttpClientFactory.CreateClient("BooksApi");
+                var response = await httpClient.PostAsJsonAsync("api/Books", newBook);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    isAddBookFormVisible = false;
+                    newBook = new Book(); // Zresetuj formularz
+                    await LoadBooks();
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to add book. Status code: {response.StatusCode}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding book: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteBook(int id)
+    {
+        try
+        {
+            var httpClient = HttpClientFactory.CreateClient("BooksApi");
+            var response = await httpClient.DeleteAsync($"api/Books/{id}");
+            response.EnsureSuccessStatusCode();
+            await LoadBooks();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting book: {ex.Message}");
+        }
+    }
+    private async Task ToggleAvailability(int id, bool newStatus)
+    {
+        try
+        {
+            var httpClient = HttpClientFactory.CreateClient("BooksApi");
+            var response = await httpClient.PutAsJsonAsync($"api/Books/{id}/availability", newStatus);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Po pomyślnym zaktualizowaniu statusu, odśwież listę książek
+                await LoadBooks();
+            }
+            else
+            {
+                Console.WriteLine($"Failed to update availability. Status code: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating availability: {ex.Message}");
+        }
+    }
+}

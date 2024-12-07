@@ -1,13 +1,23 @@
 using Biblioteka.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpClient("BooksApi", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7164/"); // Ustaw odpowiedni¹ bazow¹ œcie¿kê URL
+});
+builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddDbContext<LibraryContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -27,5 +37,6 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+app.MapControllers();
 
 app.Run();

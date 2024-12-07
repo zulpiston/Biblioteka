@@ -62,3 +62,42 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+    table th, table td {
+        border: 1px solid #dddddd; /* Dodanie obramowania */
+        padding: 8px; /* Odstêp w komórkach */
+    }
+
+    table th {
+        background-color: #f4f4f4; /* Kolor t³a nag³ówka */
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f9f9f9; /* Kolor t³a co drugiego wiersza */
+    }
+
+    table tr:hover {
+        background-color: #f1f1f1; /* Podœwietlenie wiersza po najechaniu */
+    }
+
+/* Styl dla przycisków */
+button {
+    padding: 5px 10px;
+    margin: 5px;
+    border: none;
+    color: white;
+    background-color: #007bff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+    button:hover {
+        background-color: #0056b3;
+    }
