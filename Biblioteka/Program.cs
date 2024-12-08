@@ -1,6 +1,8 @@
 using Biblioteka.Data;
+using Biblioteka.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +36,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication(); // Dodanie obs³ugi uwierzytelniania
+app.UseAuthorization(); // Dodanie obs³ugi autoryzacji
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
