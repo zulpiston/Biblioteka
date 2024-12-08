@@ -1,0 +1,46 @@
+﻿<h3>ConfirmDialog</h3>
+
+@inject IJSRuntime JSRuntime
+
+<div class="confirm-dialog-overlay" style="@(IsVisible ? "display: block;" : "display: none;")">
+    <div class="confirm-dialog-box">
+        <p>@Message</p>
+        <button class="confirm-dialog-button" @onclick="OnConfirm">Potwierdź</button>
+        <button class="confirm-dialog-button cancel" @onclick="OnCancel">Anuluj</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Message { get; set; } = "Czy na pewno chcesz kontynuować?";
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    public bool IsVisible { get; private set; }
+
+    public void Show()
+    {
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    public void Hide()
+    {
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    private async Task OnConfirm()
+    {
+        await OnClose.InvokeAsync(true);
+        Hide();
+    }
+
+    private async Task OnCancel()
+    {
+        await OnClose.InvokeAsync(false);
+        Hide();
+    }
+
+}
