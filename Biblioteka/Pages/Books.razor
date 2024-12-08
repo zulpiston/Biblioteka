@@ -3,18 +3,19 @@
 @using Biblioteka.Models
 @inject IHttpClientFactory HttpClientFactory
 
+<link href="~/css/site.css" rel="stylesheet"/>
 
 
 <h3>Ksiazki</h3>
 
-<div>
+<div class="navmenuKsiazki">
     <!-- Sortowanie -->
     <button @onclick="() => SortBooksBy(nameof(Book.Title))">Sortuj po tytule</button>
     <button @onclick="() => SortBooksBy(nameof(Book.Author))">Sortuj po autorze</button>
     <button @onclick="() => SortBooksBy(nameof(Book.IsAvailable))">Sortuj po dostępności</button>
 </div>
 
-<div>
+<div class="searchbar">
     <!-- Wyszukiwanie -->
     <input @bind="searchTerm" placeholder="Szukaj po tytule lub autorze" />
     <button @onclick="SearchBooks">Szukaj</button>
