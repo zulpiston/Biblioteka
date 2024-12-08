@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddHttpClient("BooksApi", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7164/"); // Ustaw odpowiedni¹ bazow¹ œcie¿kê URL
+    client.BaseAddress = new Uri("https://localhost:7164/"); 
 });
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
