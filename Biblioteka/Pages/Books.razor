@@ -109,7 +109,7 @@
         StateHasChanged(); // Wymuś aktualizację interfejsu
     }
 
-    private object? GetPropertyValue(Book book, string propertyName)
+    private object? GetPropertyValue(Book book, string propertyName) //
     {
         var property = book.GetType().GetProperty(propertyName);
         if (property != null)
