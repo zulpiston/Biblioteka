@@ -1,5 +1,4 @@
-﻿
-@page "/books"
+﻿@page "/books"
 @using Biblioteka.Models
 @inject IHttpClientFactory HttpClientFactory
 
@@ -34,6 +33,7 @@
         <button type="submit">Dodaj</button>
     </EditForm>
 }
+
 
 <table>
     <thead>
@@ -97,7 +97,7 @@
     private void SortBooksBy(string propertyName)
     {
         Console.WriteLine($"Sorting by: {propertyName}"); // Sprawdź, czy ta linia jest wywoływana
-        
+
         if (isAscending)
         {
             displayedBooks = displayedBooks.OrderBy(b => GetPropertyValue(b, propertyName)).ToList();
