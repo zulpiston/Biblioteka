@@ -4,7 +4,8 @@ namespace Biblioteka.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public string Imie { get; set; }
-        public string Nazwisko { get; set; }
+        public string FullName { get; set; }
+        
     }
 }
+//xxx
