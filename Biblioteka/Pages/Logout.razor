@@ -1,0 +1,24 @@
+﻿@page "/logout"
+@inject NavigationManager Navigation
+
+<PageTitle>Logout</PageTitle>
+
+<p>Logging out...</p>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Wylogowanie użytkownika przez OpenIddict (przekierowanie na endpoint logout)
+        await LogoutAsync();
+
+        // Po wylogowaniu, przekierowanie na stronę główną
+        Navigation.NavigateTo("/");
+    }
+
+    private async Task LogoutAsync()
+    {
+        // Wywołanie endpointu logowania/wylogowania w OpenIddict (jeśli jest odpowiednia logika po stronie serwera)
+        // Możesz tutaj wywołać np. endpoint logowania z OpenIddict lub obsłużyć sesję
+        await Task.Yield();
+    }
+}

@@ -1,0 +1,14 @@
+﻿@page "/login"
+@inject NavigationManager Navigation
+
+<PageTitle>Login</PageTitle>
+
+<button @onclick="LoginTak">Login with OpenIddict</button>
+
+@code {
+    private void LoginTak()
+    {
+        // Przekierowanie na stronę logowania OpenIddict (endpoint autoryzacji)
+        Navigation.NavigateTo("⁦https://localhost:5001/connect/authorize⁩");
+    }
+}
