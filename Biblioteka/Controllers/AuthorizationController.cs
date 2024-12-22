@@ -1,18 +1,6 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using OpenIddict.Abstractions;
-using static OpenIddict.Abstractions.OpenIddictConstants;
-
-namespace Biblioteka.Controllers;
-
-
-public class AuthorizationController : Controller
+﻿namespace Biblioteka.Controllers
 {
-    [HttpPost("~/connect/token")]
-    public IActionResult Exchange()
+    public class Class
     {
-        var request = HttpContext.GetOpenIddictServerRequest();
-        // Obsługa żądań tokenów
-        return Ok();
     }
 }
