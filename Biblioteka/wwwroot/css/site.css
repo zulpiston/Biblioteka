@@ -142,6 +142,24 @@ button {
 }
 
 .navmenuKsiazki {
-    display: flex;
+  
+    display: inline-block;
+    float: right;
+    
+    
 
 }
+
+
+.searchbar {
+    display: block;
+    float: inline-start;
+    
+}
+
+
+    
+.divBTN {
+    display:inline-block;
+}
+    

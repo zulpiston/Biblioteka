@@ -2,7 +2,7 @@
 @using Biblioteka.Models
 @inject IHttpClientFactory HttpClientFactory
 
-<h3>Nasza biblioteka</h3>
+<h3>Wirutalna księgarnia</h3>
 
 <link href="~/css/site.css" rel="stylesheet">
 
@@ -19,9 +19,10 @@
     <button @onclick="SearchBooks">Szukaj</button>
 </div>
 
-
-<button @onclick="LoadBooks">Załaduj Książki</button>
-<button @onclick="ShowAddBookForm">Dodaj Książkę</button>
+<div class="divBTN">
+<button class="DBbtn" @onclick="LoadBooks">Załaduj Książki</button>
+<button class="DBbtn" @onclick="ShowAddBookForm">Dodaj Książkę</button>
+</div>
 
 @if (isAddBookFormVisible)
 {
