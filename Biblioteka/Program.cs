@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+//dzia³a chyba
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
